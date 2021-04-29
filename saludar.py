@@ -1,17 +1,13 @@
 import random
 
-
 def saludo1():
-    return "Hola Jose Francisco desde el Master de DevSecOps"
-
+    return "Hola"
 
 def saludo2():
-    return "Buenos días mi gente del Master"
-
+    return "Buenos días"
 
 def saludo3():
-    return "Hola, ¿Qué tal llevas el Master?"
-
+    return "Hola, ¿Qué tal?"
 
 saludo = random.randint(0, 2)
 
