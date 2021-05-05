@@ -1,22 +1,10 @@
 # Python CircleCI 2.0 configuration file
 version: 2
 jobs:
-  kics:
-    docker:
-      - image: checkmarx/kics:latest-alpine
-    steps:
-      - checkout
-      - run:
-          name: Run KICS
-          command: |
-            /app/bin/kics scan -p ${PWD} -o ~/results.json --ci
-      - store_artifacts:
-          path: ~/results.json
-
   build:
     docker:
       - image: circleci/python:3.7
-
+      - image: checkmarx/kics:latest-alpine
     working_directory: ~/repo
 
     steps:
@@ -45,7 +33,11 @@ jobs:
             #source venv/bin/activate
             #docker build -t poc/$IMAGE_NAME:$TAG .
             #echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
-            #docker push ideaslocas/$IMAGE_NAME:$TAG
-      
+            #docker push ideaslocas/$IMAGE_NAME:$TAG  
       # Step 5: Kics.io
-      - kics
+      - run:
+          name: Run KICS
+          command: |
+            /app/bin/kics scan -p ${PWD} -o ~/results.json --ci
+      - store_artifacts:
+          path: ~/results.json
