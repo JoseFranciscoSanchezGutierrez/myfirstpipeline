@@ -1,6 +1,18 @@
 # Python CircleCI 2.0 configuration file
 version: 2
 jobs:
+  kics:
+    docker:
+      - image: checkmarx/kics:latest-alpine
+    steps:
+      - checkout
+      - run:
+          name: Run KICS
+          command: |
+            /app/bin/kics scan -p ${PWD} -o ~/results.json --ci
+      - store_artifacts:
+          path: ~/results.json
+
   build:
     docker:
       - image: circleci/python:3.7
@@ -24,17 +36,6 @@ jobs:
             source venv/bin/activate
             flake8 --exclude=venv* --statistics
             pytest -v
-  kics:
-    docker:
-      - image: checkmarx/kics:latest-alpine
-    steps:
-      - checkout
-      - run:
-          name: Run KICS
-          command: |
-            /app/bin/kics scan -p ${PWD} -o ~/results.json --ci
-      - store_artifacts:
-          path: ~/results.json
 #      - setup_remote_docker:
 #          docker_layer_caching: true
       # Step 4: Docker build
@@ -45,3 +46,6 @@ jobs:
             #docker build -t poc/$IMAGE_NAME:$TAG .
             #echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             #docker push ideaslocas/$IMAGE_NAME:$TAG
+      
+      # Step 5: Kics.io
+      - kics
